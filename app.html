@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Grupo DV • App</title>
+<title>Licitações • Grupo DV</title>
 
 <meta name="viewport"
       content="width=device-width,
@@ -15,9 +15,11 @@
 <meta name="theme-color" content="#0b0b0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Grupo DV">
-
+<meta name="apple-mobile-web-app-title" content="Licitações DV">
 <link rel="manifest" href="manifest.json">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
 <style>
 :root{
@@ -27,6 +29,9 @@
   --text:#f5f5f5;
   --muted:#9ca3af;
   --gold:#d4af37;
+  --primary:#2563eb;
+  --top:56px;
+  --bottom:68px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
@@ -41,18 +46,32 @@ html,body{
 
 /* HEADER */
 header{
-  height:56px;
+  height:var(--top);
   background:#0b0b0b;
   border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
-  justify-content:center;
-  font-weight:700;
+  justify-content:space-between;
+  padding:0 18px;
 }
 
-/* IFRAME */
+header .title{
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+header .badge{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(212,175,55,.12);
+  color:var(--gold);
+}
+
+/* CONTENT */
 main{
-  height:calc(100% - 56px);
+  height:calc(100% - var(--top) - var(--bottom));
+  background:#000;
 }
 
 iframe{
@@ -61,20 +80,98 @@ iframe{
   border:0;
   background:#000;
 }
+
+/* NAVBAR */
+nav{
+  height:var(--bottom);
+  background:#0b0b0b;
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+}
+
+nav button{
+  all:unset;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:var(--muted);
+  cursor:pointer;
+  transition:.2s;
+}
+
+nav button i{
+  font-size:22px;
+}
+
+nav button span{
+  font-size:11px;
+}
+
+nav button.active{
+  color:var(--primary);
+}
+
+nav button.active i{
+  transform:translateY(-2px);
+}
+
+/* MOBILE SAFE */
+@supports(padding:max(0px)){
+  body{
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+}
 </style>
 </head>
 
 <body>
 
-<header>Grupo DV</header>
+<!-- HEADER -->
+<header>
+  <div class="title">Licitações</div>
+  <div class="badge">Grupo DV</div>
+</header>
 
+<!-- APP -->
 <main>
-  <!-- TROQUE AQUI O CONTEÚDO INICIAL -->
-  <iframe src="dashboard.html"></iframe>
+  <iframe id="frame" src="dashboard.html"></iframe>
 </main>
 
+<!-- NAV -->
+<nav>
+  <button class="active" onclick="go('dashboard.html',this)">
+    <i class="ri-dashboard-line"></i>
+    <span>Painel</span>
+  </button>
+
+  <button onclick="go('licitacoes.html',this)">
+    <i class="ri-auction-line"></i>
+    <span>Licitações</span>
+  </button>
+
+  <button onclick="go('itens.html',this)">
+    <i class="ri-list-check-2"></i>
+    <span>Itens</span>
+  </button>
+
+  <button onclick="go('config.html',this)">
+    <i class="ri-settings-3-line"></i>
+    <span>Ajustes</span>
+  </button>
+</nav>
+
 <script>
-/* REGISTRO DO SERVICE WORKER */
+/* CONTROLE DE IFRAMES */
+function go(url, el){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('frame').src = url;
+}
+
+/* SERVICE WORKER */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js');
 }
